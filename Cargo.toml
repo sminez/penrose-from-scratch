@@ -1,0 +1,28 @@
+[package]
+name = "penrose-from-scratch"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+doc = false
+name = "penrose-from-scratch"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0.66"
+tracing = "0.1.37"
+tracing-subscriber = { version = "0.3.16", features = ["env-filter", "json"] }
+
+# Compiling from the head of the develop branch in GitHub
+penrose = { git = "https://github.com/sminez/penrose.git" }
+penrose_ui = { git = "https://github.com/sminez/penrose.git" }
+
+# Compiling from a local checkout of the penrose repo
+# penrose = { path = "../penrose" }
+# penrose_ui = { path = "../penrose/crates/penrose_ui" }
+
+# Latest releases on crates.io
+# penrose = "0.3"
+# penrose_ui = "0.1"
