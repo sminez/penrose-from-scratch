@@ -1,6 +1,3 @@
-# TODO: manpages?
-#       other binaries
-
 all: build
 
 .PHONY: build
@@ -20,6 +17,8 @@ install:
 	@echo ":: Installing utility scripts..."
 	@cp -r scripts /usr/local
 	@ls scripts | xargs -I {} chmod 755 /usr/local/scripts/{}
+	@echo ":: Copying over xsession file..."
+	@cp penrose-from-scratch.desktop /usr/share/xsessions/
 	@echo ":: Done"
 
 .PHONY: uninstall
