@@ -1,8 +1,8 @@
 [Desktop Entry]
 Version=1.0
 Name=Penrose From Scratch Session
-Comment=Use this session to run penrose as your desktop environment
-Exec=run-penrose
+Comment=Use this session to run penrose-from-scratch as your desktop environment
+Exec=run-penrose-from-scratch
 Icon=
 Type=Application
 DesktopNames=PenroseFromScratch
