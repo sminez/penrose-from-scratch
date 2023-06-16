@@ -2,18 +2,32 @@
 use penrose::{
     builtin::{
         actions::{exit, modify_with, send_layout_message, spawn},
-        layout::messages::{ExpandMain, IncMain, ShrinkMain},
+        layout::{
+            messages::{ExpandMain, IncMain, ShrinkMain},
+            transformers::ReserveTop,
+        },
     },
     core::{
         bindings::{parse_keybindings_with_xmodmap, KeyEventHandler},
+        layout::LayoutStack,
         Config, WindowManager,
     },
+    extensions::hooks::add_ewmh_hooks,
     map,
     x11rb::RustConn,
     Result,
 };
+use penrose_ui::{bar::Position, core::TextStyle, status_bar};
 use std::collections::HashMap;
 use tracing_subscriber::{self, prelude::*};
+
+// UI style for the status bar
+const FONT: &str = "ProFontIIx Nerd Font";
+const BAR_HEIGHT_PX: u32 = 18;
+const BLACK: u32 = 0x282828ff;
+const WHITE: u32 = 0xebdbb2ff;
+const GREY: u32 = 0x3c3836ff;
+const BLUE: u32 = 0x458588ff;
 
 fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
     let mut raw_bindings = map! {
@@ -35,7 +49,12 @@ fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
         "M-S-Left" => send_layout_message(|| ShrinkMain),
         "M-semicolon" => spawn("dmenu_run"),
         "M-Return" => spawn("st"),
+
+        // This is actually just "restart" for us thanks to the wrapper
+        // script we are running inside of!
         "M-A-Escape" => exit(),
+        // Actually log out and exit
+        "M-C-Escape" => spawn("pkill -fi penrose"),
     };
 
     for tag in &["1", "2", "3", "4", "5", "6", "7", "8", "9"] {
@@ -54,15 +73,38 @@ fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
     raw_bindings
 }
 
+fn layouts() -> LayoutStack {
+    LayoutStack::default().map(|layout| ReserveTop::wrap(layout, BAR_HEIGHT_PX))
+}
+
 fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter("info")
         .finish()
         .init();
 
+    let style = TextStyle {
+        font: FONT.to_string(),
+        point_size: 8,
+        fg: WHITE.into(),
+        bg: Some(BLACK.into()),
+        padding: (2.0, 2.0),
+    };
+
     let conn = RustConn::new()?;
     let key_bindings = parse_keybindings_with_xmodmap(raw_key_bindings())?;
-    let wm = WindowManager::new(Config::default(), key_bindings, HashMap::new(), conn)?;
+    let config = add_ewmh_hooks(Config {
+        default_layouts: layouts(),
+        ..Config::default()
+    });
+
+    let bar = status_bar(BAR_HEIGHT_PX, &style, BLUE, GREY, Position::Top).unwrap();
+    let wm = bar.add_to(WindowManager::new(
+        config,
+        key_bindings,
+        HashMap::new(),
+        conn,
+    )?);
 
     wm.run()
 }

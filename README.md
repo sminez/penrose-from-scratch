@@ -8,6 +8,7 @@ This is a work in progress project to build up a fully featured tiling window ma
 so please make sure you have an alternative desktop environment available to use in case anything
 breaks!
 
+
 ## Installation
 
 > **NOTE**: Really _do_ read the Makefile before installing: there's nothing harmful in
@@ -26,3 +27,10 @@ $ make build && sudo make install
 
 This should set you up for running `penrose-from-scratch` as a desktop session from your
 [display manager](https://wiki.archlinux.org/title/Display_manager) when you log in.
+
+
+## Following along
+
+The [progress-so-far.md](./progress-so-far.md) file in the root of this repository acts as a
+bit of a change log and reference for what we've done so far. If you're looking for a summary
+of what's been implemented (and when it was implemented) that's a good place to start.
