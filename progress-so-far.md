@@ -8,7 +8,7 @@ bit of a guide for where to find things and where we're heading.
 >           the episode number they came from so that you can look up where changes
 >           came from relatively easily.
 >
->           `ep42: found the meaning of life (bound to "M-S-/")`
+> `ep42: found the meaning of life (bound to "M-S-/")`
 
 
 ## Ep01
@@ -41,7 +41,32 @@ a decent working environment to start customising things.
 
 ---
 
+## Ep03
+_Configuring keybindings_
+
+Now that we have something that's a little nicer to live in we can start digging in
+to specfic things work. This episode we're taking a look at keybindings: how they
+work, how to write custom KeyEventHandlers and what Penrose is doing behind the
+scenes with your bindings to update your window manager state.
+
+- [x] Reviewing the logout / restart keybindings we wrote last time
+- [x] Looking at the [KeyEventHandler][4] trait
+  - [Traits in the Rust book][5]
+- [x] The [key_handler][6] helper function
+  - Looking at the source code of some of the built in actions
+  - [Trait objects][7] in Rust
+- [x] The [modify_and_refresh][8] method on `XConn`
+- [x] Using [dmenu][9] to write ourselves a power menu
+
+---
+
   [0]: https://sminez.github.io/penrose/getting-started.html
   [1]: https://github.com/sminez/penrose/blob/develop/examples/minimal/main.rs
   [2]: https://specifications.freedesktop.org/wm-spec/latest/
   [3]: https://sminez.github.io/penrose/rustdoc/penrose/builtin/layout/index.html
+  [4]: https://sminez.github.io/penrose/rustdoc/penrose/core/bindings/trait.KeyEventHandler.html
+  [5]: https://doc.rust-lang.org/book/ch10-02-traits.html
+  [6]: https://sminez.github.io/penrose/rustdoc/penrose/builtin/actions/fn.key_handler.html
+  [7]: https://doc.rust-lang.org/reference/types/trait-object.html
+  [8]: https://sminez.github.io/penrose/rustdoc/penrose/x/trait.XConnExt.html#method.modify_and_refresh
+  [9]: http://tools.suckless.org/dmenu/

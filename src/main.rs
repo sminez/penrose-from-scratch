@@ -1,7 +1,7 @@
 //! penrose from scratch
 use penrose::{
     builtin::{
-        actions::{exit, modify_with, send_layout_message, spawn},
+        actions::{key_handler, modify_with, send_layout_message, spawn},
         layout::{
             messages::{ExpandMain, IncMain, ShrinkMain},
             transformers::ReserveTop,
@@ -12,13 +12,16 @@ use penrose::{
         layout::LayoutStack,
         Config, WindowManager,
     },
-    extensions::hooks::add_ewmh_hooks,
-    map,
+    extensions::{
+        hooks::add_ewmh_hooks,
+        util::dmenu::{DMenu, DMenuConfig, MenuMatch},
+    },
+    map, util,
     x11rb::RustConn,
     Result,
 };
 use penrose_ui::{bar::Position, core::TextStyle, status_bar};
-use std::collections::HashMap;
+use std::{collections::HashMap, process::exit};
 use tracing_subscriber::{self, prelude::*};
 
 // UI style for the status bar
@@ -29,6 +32,30 @@ const WHITE: u32 = 0xebdbb2ff;
 const GREY: u32 = 0x3c3836ff;
 const BLUE: u32 = 0x458588ff;
 
+fn power_menu() -> Box<dyn KeyEventHandler<RustConn>> {
+    key_handler(|state, _| {
+        let screen_index = state.client_set.current_screen().index();
+        let dmenu = DMenu::new(
+            &DMenuConfig {
+                custom_prompt: Some(">>> ".to_string()),
+                ..Default::default()
+            },
+            screen_index,
+        );
+        let choices = vec!["restart-penrose", "logout"];
+
+        if let Ok(MenuMatch::Line(_, choice)) = dmenu.build_menu(choices) {
+            match choice.as_ref() {
+                "restart-penrose" => exit(0),
+                "logout" => util::spawn("pkill -fi penrose"),
+                _ => Ok(()),
+            }
+        } else {
+            Ok(())
+        }
+    })
+}
+
 fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
     let mut raw_bindings = map! {
         map_keys: |k: &str| k.to_string();
@@ -38,23 +65,23 @@ fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
         "M-S-j" => modify_with(|cs| cs.swap_down()),
         "M-S-k" => modify_with(|cs| cs.swap_up()),
         "M-S-q" => modify_with(|cs| cs.kill_focused()),
+
         "M-Tab" => modify_with(|cs| cs.toggle_tag()),
         "M-bracketright" => modify_with(|cs| cs.next_screen()),
         "M-bracketleft" => modify_with(|cs| cs.previous_screen()),
+
         "M-grave" => modify_with(|cs| cs.next_layout()),
         "M-S-grave" => modify_with(|cs| cs.previous_layout()),
+
         "M-S-Up" => send_layout_message(|| IncMain(1)),
         "M-S-Down" => send_layout_message(|| IncMain(-1)),
         "M-S-Right" => send_layout_message(|| ExpandMain),
         "M-S-Left" => send_layout_message(|| ShrinkMain),
+
         "M-semicolon" => spawn("dmenu_run"),
         "M-Return" => spawn("st"),
 
-        // This is actually just "restart" for us thanks to the wrapper
-        // script we are running inside of!
-        "M-A-Escape" => exit(),
-        // Actually log out and exit
-        "M-C-Escape" => spawn("pkill -fi penrose"),
+        "M-A-Escape" => power_menu(),
     };
 
     for tag in &["1", "2", "3", "4", "5", "6", "7", "8", "9"] {
