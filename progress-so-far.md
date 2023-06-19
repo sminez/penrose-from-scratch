@@ -60,6 +60,25 @@ scenes with your bindings to update your window manager state.
 
 ---
 
+## Ep04
+_Hooking into window manager execution_
+
+In addition to running your own code in response to a key binding, you can also set
+up custom hooks to tell Penrose to run some additional logic when specific parts of
+the window manager event loop are hit. In this episode we take a look at what the
+different hook points are, the traits involved for writing hooks and we have a go
+at writing each kind of hook.
+
+- [ ] Overview of how the window manager runs
+- [ ] The different kinds of hooks we can write
+  - [ ] Adding a startup hook (execute a script)
+  - [ ] Adding a layout hook (spacing and gaps)
+  - [ ] Adding a manage hook
+  - [ ] Adding a refresh hook
+  - [ ] Adding an event hook
+
+---
+
   [0]: https://sminez.github.io/penrose/getting-started.html
   [1]: https://github.com/sminez/penrose/blob/develop/examples/minimal/main.rs
   [2]: https://specifications.freedesktop.org/wm-spec/latest/
