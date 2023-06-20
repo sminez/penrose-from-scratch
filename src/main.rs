@@ -2,10 +2,8 @@
 use penrose::{
     builtin::{
         actions::{key_handler, modify_with, send_layout_message, spawn},
-        layout::{
-            messages::{ExpandMain, IncMain, ShrinkMain},
-            transformers::ReserveTop,
-        },
+        hooks::SpacingHook,
+        layout::messages::{ExpandMain, IncMain, ShrinkMain},
     },
     core::{
         bindings::{parse_keybindings_with_xmodmap, KeyEventHandler},
@@ -13,10 +11,11 @@ use penrose::{
         Config, WindowManager,
     },
     extensions::{
-        hooks::add_ewmh_hooks,
+        hooks::{add_ewmh_hooks, manage::SetWorkspace, startup::SpawnOnStartup},
         util::dmenu::{DMenu, DMenuConfig, MenuMatch},
     },
     map, util,
+    x::query::ClassName,
     x11rb::RustConn,
     Result,
 };
@@ -26,7 +25,7 @@ use tracing_subscriber::{self, prelude::*};
 
 // UI style for the status bar
 const FONT: &str = "ProFontIIx Nerd Font";
-const BAR_HEIGHT_PX: u32 = 18;
+const BAR_HEIGHT_PX: u32 = 24;
 const BLACK: u32 = 0x282828ff;
 const WHITE: u32 = 0xebdbb2ff;
 const GREY: u32 = 0x3c3836ff;
@@ -69,6 +68,8 @@ fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
         "M-Tab" => modify_with(|cs| cs.toggle_tag()),
         "M-bracketright" => modify_with(|cs| cs.next_screen()),
         "M-bracketleft" => modify_with(|cs| cs.previous_screen()),
+        "M-S-bracketright" => modify_with(|cs| cs.drag_workspace_forward()),
+        "M-S-bracketleft" => modify_with(|cs| cs.drag_workspace_backward()),
 
         "M-grave" => modify_with(|cs| cs.next_layout()),
         "M-S-grave" => modify_with(|cs| cs.previous_layout()),
@@ -78,7 +79,7 @@ fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
         "M-S-Right" => send_layout_message(|| ExpandMain),
         "M-S-Left" => send_layout_message(|| ShrinkMain),
 
-        "M-semicolon" => spawn("dmenu_run"),
+        "M-semicolon" => spawn("rofi-apps"),
         "M-Return" => spawn("st"),
 
         "M-A-Escape" => power_menu(),
@@ -101,7 +102,7 @@ fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
 }
 
 fn layouts() -> LayoutStack {
-    LayoutStack::default().map(|layout| ReserveTop::wrap(layout, BAR_HEIGHT_PX))
+    LayoutStack::default()
 }
 
 fn main() -> Result<()> {
@@ -112,7 +113,7 @@ fn main() -> Result<()> {
 
     let style = TextStyle {
         font: FONT.to_string(),
-        point_size: 8,
+        point_size: 10,
         fg: WHITE.into(),
         bg: Some(BLACK.into()),
         padding: (2.0, 2.0),
@@ -120,12 +121,25 @@ fn main() -> Result<()> {
 
     let conn = RustConn::new()?;
     let key_bindings = parse_keybindings_with_xmodmap(raw_key_bindings())?;
+
+    let startup_hook = SpawnOnStartup::boxed("/usr/local/scripts/penrose-startup.sh");
+    let manage_hook = Box::new((ClassName("qutebrowser"), SetWorkspace("5")));
+    let layout_hook = Box::new(SpacingHook {
+        inner_px: 5,
+        outer_px: 5,
+        top_px: 0,
+        bottom_px: BAR_HEIGHT_PX,
+    });
+
     let config = add_ewmh_hooks(Config {
         default_layouts: layouts(),
+        startup_hook: Some(startup_hook),
+        layout_hook: Some(layout_hook),
+        manage_hook: Some(manage_hook),
         ..Config::default()
     });
 
-    let bar = status_bar(BAR_HEIGHT_PX, &style, BLUE, GREY, Position::Top).unwrap();
+    let bar = status_bar(BAR_HEIGHT_PX, &style, BLUE, GREY, Position::Bottom).unwrap();
     let wm = bar.add_to(WindowManager::new(
         config,
         key_bindings,

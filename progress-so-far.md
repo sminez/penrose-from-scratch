@@ -69,13 +69,13 @@ the window manager event loop are hit. In this episode we take a look at what th
 different hook points are, the traits involved for writing hooks and we have a go
 at writing each kind of hook.
 
-- [ ] Overview of how the window manager runs
-- [ ] The different kinds of hooks we can write
-  - [ ] Adding a startup hook (execute a script)
-  - [ ] Adding a layout hook (spacing and gaps)
-  - [ ] Adding a manage hook
-  - [ ] Adding a refresh hook
-  - [ ] Adding an event hook
+- [x] Overview of how the window manager runs
+  - Details on why we need set the sigchild handler can be found [here][10]
+- [x] The [different kinds of hooks][11] we can write
+  - [x] Adding a startup hook ([execute a script][12])
+  - [x] Adding a layout hook ([spacing and gaps][13])
+  - [x] Adding a manage hook ([move a certain program to a specific workspace][14])
+  - [ ] ~Refresh and event hooks in the status bar~
 
 ---
 
@@ -89,3 +89,8 @@ at writing each kind of hook.
   [7]: https://doc.rust-lang.org/reference/types/trait-object.html
   [8]: https://sminez.github.io/penrose/rustdoc/penrose/x/trait.XConnExt.html#method.modify_and_refresh
   [9]: http://tools.suckless.org/dmenu/
+  [10]: https://doc.rust-lang.org/std/process/struct.Child.html#warning
+  [11]: https://sminez.github.io/penrose/rustdoc/penrose/core/hooks/index.html
+  [12]: https://sminez.github.io/penrose/rustdoc/penrose/extensions/hooks/startup/struct.SpawnOnStartup.html
+  [13]: https://sminez.github.io/penrose/rustdoc/penrose/builtin/hooks/struct.SpacingHook.html
+  [14]: https://sminez.github.io/penrose/rustdoc/penrose/extensions/hooks/manage/index.html
