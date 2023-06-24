@@ -80,7 +80,7 @@ fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
         "M-S-Left" => send_layout_message(|| ShrinkMain),
 
         "M-semicolon" => spawn("rofi-apps"),
-        "M-Return" => spawn("st"),
+        "M-Return" => spawn("kitty"),
 
         "M-A-Escape" => power_menu(),
     };

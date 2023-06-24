@@ -79,6 +79,22 @@ at writing each kind of hook.
 
 ---
 
+## Ep05
+_State extensions, scratchpads and the statusbar_
+
+Sometimes you find yourself needing to make use of persistant state that is not provided
+by the window manager itself. There are lots of ways to achieve this in Rust but one easy
+way to track state which you are using for your bindings and hooks is to use a `state extension`.
+In this episode we take a look at what a state extension is, how to set one up and where
+some of the code provided in the main Penrose crates makes use of them.
+
+- [ ] What are state extensions?
+- [ ] Why do you need these in the first place?
+- [ ] Adding a NamedScratchpad
+- [ ] How the statusbar works behind the scenes
+
+---
+
   [0]: https://sminez.github.io/penrose/getting-started.html
   [1]: https://github.com/sminez/penrose/blob/develop/examples/minimal/main.rs
   [2]: https://specifications.freedesktop.org/wm-spec/latest/
