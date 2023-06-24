@@ -11,7 +11,12 @@ use penrose::{
         Config, WindowManager,
     },
     extensions::{
-        hooks::{add_ewmh_hooks, manage::SetWorkspace, startup::SpawnOnStartup},
+        hooks::{
+            add_ewmh_hooks,
+            manage::{FloatingCentered, SetWorkspace},
+            named_scratchpads::{add_named_scratchpads, NamedScratchPad, ToggleNamedScratchPad},
+            startup::SpawnOnStartup,
+        },
         util::dmenu::{DMenu, DMenuConfig, MenuMatch},
     },
     map, util,
@@ -55,7 +60,9 @@ fn power_menu() -> Box<dyn KeyEventHandler<RustConn>> {
     })
 }
 
-fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
+fn raw_key_bindings(
+    toggle_scratch: ToggleNamedScratchPad,
+) -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
     let mut raw_bindings = map! {
         map_keys: |k: &str| k.to_string();
 
@@ -81,6 +88,7 @@ fn raw_key_bindings() -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
 
         "M-semicolon" => spawn("rofi-apps"),
         "M-Return" => spawn("kitty"),
+        "M-slash" => Box::new(toggle_scratch),
 
         "M-A-Escape" => power_menu(),
     };
@@ -119,8 +127,16 @@ fn main() -> Result<()> {
         padding: (2.0, 2.0),
     };
 
+    let (nsp, toggle_scratch) = NamedScratchPad::new(
+        "terminal",
+        "kitty --class=KittyScratch",
+        ClassName("KittyScratch"),
+        FloatingCentered::new(0.8, 0.8),
+        true,
+    );
+
     let conn = RustConn::new()?;
-    let key_bindings = parse_keybindings_with_xmodmap(raw_key_bindings())?;
+    let key_bindings = parse_keybindings_with_xmodmap(raw_key_bindings(toggle_scratch))?;
 
     let startup_hook = SpawnOnStartup::boxed("/usr/local/scripts/penrose-startup.sh");
     let manage_hook = Box::new((ClassName("qutebrowser"), SetWorkspace("5")));
@@ -147,6 +163,8 @@ fn main() -> Result<()> {
         conn,
     )?);
 
+    let wm = add_named_scratchpads(wm, vec![nsp]);
+
     wm.run()
 }
 
@@ -156,7 +174,15 @@ mod tests {
 
     #[test]
     fn bindings_parse_correctly_with_xmodmap() {
-        let res = parse_keybindings_with_xmodmap(raw_key_bindings());
+        let (_, toggle_scratch) = NamedScratchPad::<RustConn>::new(
+            "terminal",
+            "kitty --class=KittyScratch",
+            ClassName("KittyScratch"),
+            FloatingCentered::new(0.8, 0.8),
+            true,
+        );
+
+        let res = parse_keybindings_with_xmodmap(raw_key_bindings(toggle_scratch));
 
         if let Err(e) = res {
             panic!("{e}");
