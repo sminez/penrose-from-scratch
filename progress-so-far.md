@@ -88,10 +88,9 @@ way to track state which you are using for your bindings and hooks is to use a `
 In this episode we take a look at what a state extension is, how to set one up and where
 some of the code provided in the main Penrose crates makes use of them.
 
-- [ ] What are state extensions?
-- [ ] Why do you need these in the first place?
-- [ ] Adding a NamedScratchpad
-- [ ] How the statusbar works behind the scenes
+- [x] What are state extensions?
+- [x] Why do you need these in the first place?
+- [x] Adding a NamedScratchpad
 
 ---
 
