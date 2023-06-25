@@ -22,19 +22,10 @@ use penrose::{
     map, util,
     x::query::ClassName,
     x11rb::RustConn,
-    Result,
 };
-use penrose_ui::{bar::Position, core::TextStyle, status_bar};
+use penrose_from_scratch::{bar::status_bar, BAR_HEIGHT_PX};
 use std::{collections::HashMap, process::exit};
 use tracing_subscriber::{self, prelude::*};
-
-// UI style for the status bar
-const FONT: &str = "ProFontIIx Nerd Font";
-const BAR_HEIGHT_PX: u32 = 24;
-const BLACK: u32 = 0x282828ff;
-const WHITE: u32 = 0xebdbb2ff;
-const GREY: u32 = 0x3c3836ff;
-const BLUE: u32 = 0x458588ff;
 
 fn power_menu() -> Box<dyn KeyEventHandler<RustConn>> {
     key_handler(|state, _| {
@@ -113,19 +104,11 @@ fn layouts() -> LayoutStack {
     LayoutStack::default()
 }
 
-fn main() -> Result<()> {
+fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter("info")
         .finish()
         .init();
-
-    let style = TextStyle {
-        font: FONT.to_string(),
-        point_size: 10,
-        fg: WHITE.into(),
-        bg: Some(BLACK.into()),
-        padding: (2.0, 2.0),
-    };
 
     let (nsp, toggle_scratch) = NamedScratchPad::new(
         "terminal",
@@ -139,7 +122,7 @@ fn main() -> Result<()> {
     let key_bindings = parse_keybindings_with_xmodmap(raw_key_bindings(toggle_scratch))?;
 
     let startup_hook = SpawnOnStartup::boxed("/usr/local/scripts/penrose-startup.sh");
-    let manage_hook = Box::new((ClassName("qutebrowser"), SetWorkspace("5")));
+    let manage_hook = Box::new((ClassName("obs"), SetWorkspace("1")));
     let layout_hook = Box::new(SpacingHook {
         inner_px: 5,
         outer_px: 5,
@@ -155,7 +138,7 @@ fn main() -> Result<()> {
         ..Config::default()
     });
 
-    let bar = status_bar(BAR_HEIGHT_PX, &style, BLUE, GREY, Position::Bottom).unwrap();
+    let bar = status_bar()?;
     let wm = bar.add_to(WindowManager::new(
         config,
         key_bindings,
@@ -164,8 +147,9 @@ fn main() -> Result<()> {
     )?);
 
     let wm = add_named_scratchpads(wm, vec![nsp]);
+    wm.run()?;
 
-    wm.run()
+    Ok(())
 }
 
 #[cfg(test)]

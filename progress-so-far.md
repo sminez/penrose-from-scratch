@@ -88,9 +88,27 @@ way to track state which you are using for your bindings and hooks is to use a `
 In this episode we take a look at what a state extension is, how to set one up and where
 some of the code provided in the main Penrose crates makes use of them.
 
-- [x] What are state extensions?
+- [x] What are [state extensions][15]?
 - [x] Why do you need these in the first place?
-- [x] Adding a NamedScratchpad
+- [x] Adding a [NamedScratchpad][16]
+
+---
+
+## Ep06
+_Writing status bar widgets_
+
+The status bar provided by the `penrose-ui` crate allows you to write simple text based widgets
+which you can drive from your window manager state or external data sources. The default set up
+is configured to mimic the status bar from `dwm` with the root window name being used as a way
+of placing arbitrary text in your status bar. The [widget support][18] in `penrose-ui` extends
+this idea to allow you to drive individual sections of the bar using custom code.
+In this episode we go over how the status bar works and how you can write your own widgets to
+extend the behaviour.
+
+- [x] Taking a look at the [penrose-ui crate][17]
+- [x] How [widgets][18] work
+- [x] Rewriting our status bar to customise which widgets we use
+- [x] Writing a our own simple widget using [IntervalText][19]
 
 ---
 
@@ -109,3 +127,8 @@ some of the code provided in the main Penrose crates makes use of them.
   [12]: https://sminez.github.io/penrose/rustdoc/penrose/extensions/hooks/startup/struct.SpawnOnStartup.html
   [13]: https://sminez.github.io/penrose/rustdoc/penrose/builtin/hooks/struct.SpacingHook.html
   [14]: https://sminez.github.io/penrose/rustdoc/penrose/extensions/hooks/manage/index.html
+  [15]: https://sminez.github.io/penrose/rustdoc/penrose/core/struct.State.html#method.extension
+  [16]: https://sminez.github.io/penrose/rustdoc/penrose/extensions/hooks/named_scratchpads/index.html
+  [17]: https://sminez.github.io/penrose/rustdoc/penrose_ui/index.html
+  [18]: https://sminez.github.io/penrose/rustdoc/penrose_ui/bar/widgets/trait.Widget.html
+  [19]: https://sminez.github.io/penrose/rustdoc/penrose_ui/bar/widgets/struct.IntervalText.html

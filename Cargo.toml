@@ -23,8 +23,8 @@ penrose = { git = "https://github.com/sminez/penrose.git" }
 penrose_ui = { git = "https://github.com/sminez/penrose.git" }
 
 # Compiling from a local checkout of the penrose repo
-# penrose = { path = "../penrose" }
-# penrose_ui = { path = "../penrose/crates/penrose_ui" }
+# penrose = { path = "../../penrose" }
+# penrose_ui = { path = "../../penrose/crates/penrose_ui" }
 
 # Latest releases on crates.io
 # penrose = "0.3"
