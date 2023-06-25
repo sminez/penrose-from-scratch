@@ -1,108 +1,21 @@
 //! penrose from scratch
 use penrose::{
-    builtin::{
-        actions::{key_handler, modify_with, send_layout_message, spawn},
-        hooks::SpacingHook,
-        layout::messages::{ExpandMain, IncMain, ShrinkMain},
+    builtin::hooks::SpacingHook,
+    core::{bindings::parse_keybindings_with_xmodmap, layout::LayoutStack, Config, WindowManager},
+    extensions::hooks::{
+        add_ewmh_hooks,
+        manage::{FloatingCentered, SetWorkspace},
+        named_scratchpads::{add_named_scratchpads, NamedScratchPad},
+        startup::SpawnOnStartup,
     },
-    core::{
-        bindings::{parse_keybindings_with_xmodmap, KeyEventHandler},
-        layout::LayoutStack,
-        Config, WindowManager,
-    },
-    extensions::{
-        hooks::{
-            add_ewmh_hooks,
-            manage::{FloatingCentered, SetWorkspace},
-            named_scratchpads::{add_named_scratchpads, NamedScratchPad, ToggleNamedScratchPad},
-            startup::SpawnOnStartup,
-        },
-        util::dmenu::{DMenu, DMenuConfig, MenuMatch},
-    },
-    map, util,
     x::query::ClassName,
     x11rb::RustConn,
 };
-use penrose_from_scratch::{bar::status_bar, BAR_HEIGHT_PX};
-use std::{collections::HashMap, process::exit};
+use penrose_from_scratch::{
+    bar::status_bar, bindings::raw_key_bindings, BAR_HEIGHT_PX, GAP_PX, STARTUP_SCRIPT,
+};
+use std::collections::HashMap;
 use tracing_subscriber::{self, prelude::*};
-
-fn power_menu() -> Box<dyn KeyEventHandler<RustConn>> {
-    key_handler(|state, _| {
-        let screen_index = state.client_set.current_screen().index();
-        let dmenu = DMenu::new(
-            &DMenuConfig {
-                custom_prompt: Some(">>> ".to_string()),
-                ..Default::default()
-            },
-            screen_index,
-        );
-        let choices = vec!["restart-penrose", "logout"];
-
-        if let Ok(MenuMatch::Line(_, choice)) = dmenu.build_menu(choices) {
-            match choice.as_ref() {
-                "restart-penrose" => exit(0),
-                "logout" => util::spawn("pkill -fi penrose"),
-                _ => Ok(()),
-            }
-        } else {
-            Ok(())
-        }
-    })
-}
-
-fn raw_key_bindings(
-    toggle_scratch: ToggleNamedScratchPad,
-) -> HashMap<String, Box<dyn KeyEventHandler<RustConn>>> {
-    let mut raw_bindings = map! {
-        map_keys: |k: &str| k.to_string();
-
-        "M-j" => modify_with(|cs| cs.focus_down()),
-        "M-k" => modify_with(|cs| cs.focus_up()),
-        "M-S-j" => modify_with(|cs| cs.swap_down()),
-        "M-S-k" => modify_with(|cs| cs.swap_up()),
-        "M-S-q" => modify_with(|cs| cs.kill_focused()),
-
-        "M-Tab" => modify_with(|cs| cs.toggle_tag()),
-        "M-bracketright" => modify_with(|cs| cs.next_screen()),
-        "M-bracketleft" => modify_with(|cs| cs.previous_screen()),
-        "M-S-bracketright" => modify_with(|cs| cs.drag_workspace_forward()),
-        "M-S-bracketleft" => modify_with(|cs| cs.drag_workspace_backward()),
-
-        "M-grave" => modify_with(|cs| cs.next_layout()),
-        "M-S-grave" => modify_with(|cs| cs.previous_layout()),
-
-        "M-S-Up" => send_layout_message(|| IncMain(1)),
-        "M-S-Down" => send_layout_message(|| IncMain(-1)),
-        "M-S-Right" => send_layout_message(|| ExpandMain),
-        "M-S-Left" => send_layout_message(|| ShrinkMain),
-
-        "M-semicolon" => spawn("rofi-apps"),
-        "M-Return" => spawn("kitty"),
-        "M-slash" => Box::new(toggle_scratch),
-
-        "M-A-Escape" => power_menu(),
-    };
-
-    for tag in &["1", "2", "3", "4", "5", "6", "7", "8", "9"] {
-        raw_bindings.extend([
-            (
-                format!("M-{tag}"),
-                modify_with(move |client_set| client_set.focus_tag(tag)),
-            ),
-            (
-                format!("M-S-{tag}"),
-                modify_with(move |client_set| client_set.move_focused_to_tag(tag)),
-            ),
-        ]);
-    }
-
-    raw_bindings
-}
-
-fn layouts() -> LayoutStack {
-    LayoutStack::default()
-}
 
 fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt()
@@ -118,58 +31,38 @@ fn main() -> anyhow::Result<()> {
         true,
     );
 
-    let conn = RustConn::new()?;
-    let key_bindings = parse_keybindings_with_xmodmap(raw_key_bindings(toggle_scratch))?;
-
-    let startup_hook = SpawnOnStartup::boxed("/usr/local/scripts/penrose-startup.sh");
-    let manage_hook = Box::new((ClassName("obs"), SetWorkspace("1")));
-    let layout_hook = Box::new(SpacingHook {
-        inner_px: 5,
-        outer_px: 5,
-        top_px: 0,
-        bottom_px: BAR_HEIGHT_PX,
-    });
-
-    let config = add_ewmh_hooks(Config {
-        default_layouts: layouts(),
-        startup_hook: Some(startup_hook),
-        layout_hook: Some(layout_hook),
-        manage_hook: Some(manage_hook),
-        ..Config::default()
-    });
-
-    let bar = status_bar()?;
-    let wm = bar.add_to(WindowManager::new(
-        config,
-        key_bindings,
+    let wm = WindowManager::new(
+        add_ewmh_hooks(config()),
+        parse_keybindings_with_xmodmap(raw_key_bindings(toggle_scratch))?,
         HashMap::new(),
-        conn,
-    )?);
+        RustConn::new()?,
+    )?;
 
-    let wm = add_named_scratchpads(wm, vec![nsp]);
+    let wm = add_named_scratchpads(status_bar()?.add_to(wm), vec![nsp]);
     wm.run()?;
 
     Ok(())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+fn layouts() -> LayoutStack {
+    LayoutStack::default()
+}
 
-    #[test]
-    fn bindings_parse_correctly_with_xmodmap() {
-        let (_, toggle_scratch) = NamedScratchPad::<RustConn>::new(
-            "terminal",
-            "kitty --class=KittyScratch",
-            ClassName("KittyScratch"),
-            FloatingCentered::new(0.8, 0.8),
-            true,
-        );
+fn config() -> Config<RustConn> {
+    let startup_hook = SpawnOnStartup::boxed(STARTUP_SCRIPT);
+    let manage_hook = Box::new((ClassName("obs"), SetWorkspace("1")));
+    let layout_hook = Box::new(SpacingHook {
+        inner_px: GAP_PX,
+        outer_px: GAP_PX,
+        top_px: 0,
+        bottom_px: BAR_HEIGHT_PX,
+    });
 
-        let res = parse_keybindings_with_xmodmap(raw_key_bindings(toggle_scratch));
-
-        if let Err(e) = res {
-            panic!("{e}");
-        }
+    Config {
+        default_layouts: layouts(),
+        startup_hook: Some(startup_hook),
+        layout_hook: Some(layout_hook),
+        manage_hook: Some(manage_hook),
+        ..Config::default()
     }
 }
