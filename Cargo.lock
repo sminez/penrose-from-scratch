@@ -219,9 +219,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.146"
+version = "0.2.147"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f92be4933c13fd498862a9e02a3055f8a8d9c039ce33db97306fd5a6caa7f29b"
+checksum = "b4668fb0ea861c1df094127ac5f1da3409a82116a4ba74fca2e58ef927159bb3"
 
 [[package]]
 name = "log"
@@ -344,7 +344,7 @@ dependencies = [
 [[package]]
 name = "penrose"
 version = "0.3.2"
-source = "git+https://github.com/sminez/penrose.git#ecbf9cd1f5c2265ec7f808302f13273becb459d4"
+source = "git+https://github.com/sminez/penrose.git#7356541e43e68b531363dc83706f4a0c29ee3f4d"
 dependencies = [
  "anymap",
  "bitflags",
@@ -371,7 +371,7 @@ dependencies = [
 [[package]]
 name = "penrose_keysyms"
 version = "0.1.1"
-source = "git+https://github.com/sminez/penrose.git#ecbf9cd1f5c2265ec7f808302f13273becb459d4"
+source = "git+https://github.com/sminez/penrose.git#7356541e43e68b531363dc83706f4a0c29ee3f4d"
 dependencies = [
  "strum",
  "strum_macros",
@@ -380,7 +380,7 @@ dependencies = [
 [[package]]
 name = "penrose_ui"
 version = "0.1.3"
-source = "git+https://github.com/sminez/penrose.git#ecbf9cd1f5c2265ec7f808302f13273becb459d4"
+source = "git+https://github.com/sminez/penrose.git#7356541e43e68b531363dc83706f4a0c29ee3f4d"
 dependencies = [
  "cairo-rs",
  "pango",
@@ -454,9 +454,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.28"
+version = "1.0.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b9ab9c7eadfd8df19006f1cf1a4aed13540ed5cbc047010ece5826e10825488"
+checksum = "573015e8ab27661678357f27dc26460738fd2b6c86e46f386fde94cb5d913105"
 dependencies = [
  "proc-macro2",
 ]
