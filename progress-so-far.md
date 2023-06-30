@@ -112,6 +112,23 @@ extend the behaviour.
 
 ---
 
+## Ep07
+_Writing a custom layout_
+
+One of the most appealing things about a tiling window manager is having layout algorithms
+automatically position your windows for you on the screen. Penrose comes with a few simple
+algorithms out of the box and in this episode we'll write a new one, show how to work with
+the [Rect][20] struct to easily divide up screen space.
+
+- [ ] A quick look at the [Layout][21] trait.
+- [ ] What the Penrose book says about layouts
+  - [Built-in layouts][22]
+  - [A guide to writing layouts][23]
+- [ ] Writing a fibonacci layout (inspired by [this dwm patch][24])
+  - We'll be using the [print_layout_result][25] helper for this
+
+---
+
   [0]: https://sminez.github.io/penrose/getting-started.html
   [1]: https://github.com/sminez/penrose/blob/develop/examples/minimal/main.rs
   [2]: https://specifications.freedesktop.org/wm-spec/latest/
@@ -132,3 +149,9 @@ extend the behaviour.
   [17]: https://sminez.github.io/penrose/rustdoc/penrose_ui/index.html
   [18]: https://sminez.github.io/penrose/rustdoc/penrose_ui/bar/widgets/trait.Widget.html
   [19]: https://sminez.github.io/penrose/rustdoc/penrose_ui/bar/widgets/struct.IntervalText.html
+  [20]: https://sminez.github.io/penrose/rustdoc/penrose/pure/geometry/struct.Rect.html
+  [21]: https://sminez.github.io/penrose/rustdoc/penrose/core/layout/trait.Layout.html
+  [22]: https://sminez.github.io/penrose/builtin/layouts.html
+  [23]: https://sminez.github.io/penrose/building/layouts.html
+  [24]: https://dwm.suckless.org/patches/fibonacci/
+  [25]: https://sminez.github.io/penrose/rustdoc/penrose/util/fn.print_layout_result.html

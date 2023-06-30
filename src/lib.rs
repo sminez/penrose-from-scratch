@@ -3,6 +3,7 @@
 // TODO: add mod foo
 pub mod bar;
 pub mod bindings;
+pub mod layouts;
 
 // UI styling
 pub const FONT: &str = "ProFontIIx Nerd Font";

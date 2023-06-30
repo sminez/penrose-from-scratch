@@ -1,7 +1,7 @@
 //! penrose from scratch
 use penrose::{
     builtin::hooks::SpacingHook,
-    core::{bindings::parse_keybindings_with_xmodmap, layout::LayoutStack, Config, WindowManager},
+    core::{bindings::parse_keybindings_with_xmodmap, Config, WindowManager},
     extensions::hooks::{
         add_ewmh_hooks,
         manage::{FloatingCentered, SetWorkspace},
@@ -12,7 +12,8 @@ use penrose::{
     x11rb::RustConn,
 };
 use penrose_from_scratch::{
-    bar::status_bar, bindings::raw_key_bindings, BAR_HEIGHT_PX, GAP_PX, STARTUP_SCRIPT,
+    bar::status_bar, bindings::raw_key_bindings, layouts::layouts, BAR_HEIGHT_PX, GAP_PX,
+    STARTUP_SCRIPT,
 };
 use std::collections::HashMap;
 use tracing_subscriber::{self, prelude::*};
@@ -42,10 +43,6 @@ fn main() -> anyhow::Result<()> {
     wm.run()?;
 
     Ok(())
-}
-
-fn layouts() -> LayoutStack {
-    LayoutStack::default()
 }
 
 fn config() -> Config<RustConn> {
