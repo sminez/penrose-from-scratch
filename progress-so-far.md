@@ -120,12 +120,14 @@ automatically position your windows for you on the screen. Penrose comes with a 
 algorithms out of the box and in this episode we'll write a new one, show how to work with
 the [Rect][20] struct to easily divide up screen space.
 
-- [ ] A quick look at the [Layout][21] trait.
-- [ ] What the Penrose book says about layouts
+- [x] A quick look at the [Layout][21] trait.
+- [x] What the Penrose book says about layouts
   - [Built-in layouts][22]
   - [A guide to writing layouts][23]
-- [ ] Writing a fibonacci layout (inspired by [this dwm patch][24])
+- [x] Writing a fibonacci layout (inspired by [this dwm patch][24])
   - We'll be using the [print_layout_result][25] helper for this
+- [x] The [entr][26] program I use to auto-run our example file when changes are made
+      can be found [here][26].
 
 ---
 
@@ -155,3 +157,4 @@ the [Rect][20] struct to easily divide up screen space.
   [23]: https://sminez.github.io/penrose/building/layouts.html
   [24]: https://dwm.suckless.org/patches/fibonacci/
   [25]: https://sminez.github.io/penrose/rustdoc/penrose/util/fn.print_layout_result.html
+  [26]: https://github.com/eradman/entr
