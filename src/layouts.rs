@@ -10,11 +10,13 @@ const DEFAULT_CUTOFF: u32 = 40;
 
 pub fn layouts() -> LayoutStack {
     stack!(
-        Box::<Fibonacci>::default() as Box<dyn Layout>,
+        Fibonacci::boxed(DEFAULT_CUTOFF),
         Box::<MainAndStack>::default() as Box<dyn Layout>
     )
 }
 
+/// Inspired by the Fibonacci layout available for dwm:
+///   https://dwm.suckless.org/patches/fibonacci/
 #[derive(Debug, Copy, Clone)]
 pub struct Fibonacci {
     cutoff: u32,
@@ -25,6 +27,20 @@ impl Default for Fibonacci {
         Self {
             cutoff: DEFAULT_CUTOFF,
         }
+    }
+}
+
+impl Fibonacci {
+    /// Create a new [Fibonacci] layout with a specified cutoff for the minimum
+    /// dimensions allowed for a client.
+    pub fn new(cutoff: u32) -> Self {
+        Fibonacci { cutoff }
+    }
+
+    /// Create a new [Fibonacci] layout as with `new` but returned as a trait
+    /// object ready to be added to your [LayoutStack].
+    pub fn boxed(cutoff: u32) -> Box<dyn Layout> {
+        Box::new(Fibonacci::new(cutoff))
     }
 }
 
