@@ -11,7 +11,7 @@ const DEFAULT_CUTOFF: u32 = 40;
 pub fn layouts() -> LayoutStack {
     stack!(
         Fibonacci::boxed(DEFAULT_CUTOFF),
-        Box::<MainAndStack>::default() as Box<dyn Layout>
+        MainAndStack::boxed_default()
     )
 }
 
