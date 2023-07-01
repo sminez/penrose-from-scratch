@@ -2,6 +2,7 @@
 use penrose::{
     builtin::layout::MainAndStack,
     core::layout::{Layout, LayoutStack, Message},
+    extensions::layout::Tatami,
     pure::{geometry::Rect, Stack},
     stack, Xid,
 };
@@ -10,6 +11,7 @@ const DEFAULT_CUTOFF: u32 = 40;
 
 pub fn layouts() -> LayoutStack {
     stack!(
+        Tatami::boxed(0.6, 0.1),
         Fibonacci::boxed(DEFAULT_CUTOFF),
         MainAndStack::boxed_default()
     )
