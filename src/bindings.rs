@@ -77,7 +77,7 @@ pub fn raw_key_bindings(
 
         // Launchers
         "M-semicolon" => spawn("rofi-apps"),
-        "M-Return" => spawn("kitty"),
+        "M-Return" => spawn("st"),
         "M-slash" => Box::new(toggle_scratch),
         "M-A-Escape" => power_menu(),
     };
@@ -113,8 +113,8 @@ mod tests {
     fn bindings_parse_correctly_with_xmodmap() {
         let (_, toggle_scratch) = NamedScratchPad::<RustConn>::new(
             "terminal",
-            "kitty --class=KittyScratch",
-            ClassName("KittyScratch"),
+            "st -c=StScratch",
+            ClassName("StScratch"),
             FloatingCentered::new(0.8, 0.8),
             true,
         );

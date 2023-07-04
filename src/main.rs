@@ -26,8 +26,8 @@ fn main() -> anyhow::Result<()> {
 
     let (nsp, toggle_scratch) = NamedScratchPad::new(
         "terminal",
-        "kitty --class=KittyScratch",
-        ClassName("KittyScratch"),
+        "st -c=StScratch",
+        ClassName("StScratch"),
         FloatingCentered::new(0.8, 0.8),
         true,
     );
