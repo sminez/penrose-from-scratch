@@ -19,12 +19,12 @@ tracing = "0.1.37"
 tracing-subscriber = { version = "0.3.16", features = ["env-filter", "json"] }
 
 # Compiling from the head of the develop branch in GitHub
-penrose = { git = "https://github.com/sminez/penrose.git" }
-penrose_ui = { git = "https://github.com/sminez/penrose.git" }
+# penrose = { git = "https://github.com/sminez/penrose.git" }
+# penrose_ui = { git = "https://github.com/sminez/penrose.git" }
 
 # Compiling from a local checkout of the penrose repo
-# penrose = { path = "../../penrose" }
-# penrose_ui = { path = "../../penrose/crates/penrose_ui" }
+penrose = { path = "../../penrose" }
+penrose_ui = { path = "../../penrose/crates/penrose_ui" }
 
 # Latest releases on crates.io
 # penrose = "0.3"

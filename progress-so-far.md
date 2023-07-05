@@ -142,10 +142,10 @@ which allows for per-layout modifications to how layouts run (similar to a layou
 There are a couple of built-in layout transformers available to use but it is also possible
 to hand write our own higher-order layouts in order to _really_ customise how things work.
 
-- [ ] Sending dynamically typed messages to layouts
-- [ ] Handling messages in our layout
-- [ ] Applying layout transformers to existing layouts
-- [ ] Writing a custom meta-layout because we can
+- [x] Sending dynamically typed messages to layouts
+- [x] Handling messages in our layout
+- [x] Applying layout transformers to existing layouts
+- [x] Writing a custom meta-layout because we can
   - This last one might sound intimidating but it's actually pretty easy!
 
 ---
