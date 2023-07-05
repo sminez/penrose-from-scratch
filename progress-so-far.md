@@ -131,6 +131,26 @@ the [Rect][20] struct to easily divide up screen space.
 
 ---
 
+## Ep08
+_Handling layout messages and fun with layout transformers_
+
+As we've already seen with the `MainAndStack` layout, it is possible to modify how the
+active layout is working by sending it [Messages][27]. These allow us to bind keys to
+changes in our layout behaviour in pretty much any way that we want!
+For layouts that are not implemented by us, there is the [LayoutTransformer][28] trait
+which allows for per-layout modifications to how layouts run (similar to a layout hook).
+There are a couple of built-in layout transformers available to use but it is also possible
+to hand write our own higher-order layouts in order to _really_ customise how things work.
+
+- [ ] Sending dynamically typed messages to layouts
+- [ ] Handling messages in our layout
+- [ ] Applying layout transformers to existing layouts
+- [ ] Writing a custom meta-layout because we can
+  - This last one might sound intimidating but it's actually pretty easy!
+
+---
+
+
   [0]: https://sminez.github.io/penrose/getting-started.html
   [1]: https://github.com/sminez/penrose/blob/develop/examples/minimal/main.rs
   [2]: https://specifications.freedesktop.org/wm-spec/latest/
@@ -158,3 +178,5 @@ the [Rect][20] struct to easily divide up screen space.
   [24]: https://dwm.suckless.org/patches/fibonacci/
   [25]: https://sminez.github.io/penrose/rustdoc/penrose/util/fn.print_layout_result.html
   [26]: https://github.com/eradman/entr
+  [27]: https://sminez.github.io/penrose/rustdoc/penrose/core/layout/trait.IntoMessage.html
+  [28]: https://sminez.github.io/penrose/rustdoc/penrose/core/layout/trait.LayoutTransformer.html
