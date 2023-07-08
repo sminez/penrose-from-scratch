@@ -23,7 +23,7 @@ tracing-subscriber = { version = "0.3.16", features = ["env-filter", "json"] }
 # penrose_ui = { git = "https://github.com/sminez/penrose.git" }
 
 # Compiling from a local checkout of the penrose repo
-penrose = { path = "../../penrose" }
+penrose = { path = "../../penrose", features = ["default", "serde"] }
 penrose_ui = { path = "../../penrose/crates/penrose_ui" }
 
 # Latest releases on crates.io

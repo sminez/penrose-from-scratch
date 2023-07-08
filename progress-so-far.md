@@ -150,6 +150,39 @@ to hand write our own higher-order layouts in order to _really_ customise how th
 
 ---
 
+## Ep09
+_A look at the "pure state" of Penrose_
+
+The internal design of Penrose following the 0.3 rewrite is **heavily** inspired by the
+approach taken by XMonad (as opposed to dwm which was the case in the original design).
+The main idea is to split the core of the library into two parts:
+  - Pure data structures that have nothing to do with X code
+  - Handler code and API wrappers for interfacing with the X server
+
+Today, we're going to have a look at the pure data structures and how they operate. They
+are based on a technique called [Zippers][29] which are a way of encoding the concept of a
+focused element within a larger collection-like data structure.
+
+The penrose book in GitHub Pages has more information on how all
+of this works:
+  - https://sminez.github.io/penrose/overview/pure-vs-x.html
+  - https://sminez.github.io/penrose/overview/data-structures.html
+
+The data structures used by Penrose are heavily inspired by those
+found in XMonad: if you are happy reading Haskell then the following
+links are worth a look!
+  - https://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.pdf
+  - https://wiki.haskell.org/Zipper
+  - https://en.wikibooks.org/wiki/Haskell/Zippers
+  - https://donsbot.com/2007/05/17/roll-your-own-window-manager-tracking-focus-with-a-zipper/
+
+- [ ] What is a zipper?
+- [ ] Why not just use `Vec`?
+- [ ] Building up the tree state for a [StackSet][30]
+
+
+
+---
 
   [0]: https://sminez.github.io/penrose/getting-started.html
   [1]: https://github.com/sminez/penrose/blob/develop/examples/minimal/main.rs
@@ -180,3 +213,5 @@ to hand write our own higher-order layouts in order to _really_ customise how th
   [26]: https://github.com/eradman/entr
   [27]: https://sminez.github.io/penrose/rustdoc/penrose/core/layout/trait.IntoMessage.html
   [28]: https://sminez.github.io/penrose/rustdoc/penrose/core/layout/trait.LayoutTransformer.html
+  [29]: https://en.wikipedia.org/wiki/Zipper_(data_structure)
+  [30]: https://sminez.github.io/penrose/rustdoc/penrose/pure/struct.StackSet.html

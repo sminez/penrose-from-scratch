@@ -1,0 +1,21 @@
+digraph {
+  pad="0.3"
+  ranksep=0.65
+  node [fontsize=22]
+
+  StackSet -> { screens, floating, hiddenWs }
+  screens -> { sUp, s2, sDown }
+  sUp -> s1 -> { w1, ".." }
+  s2 -> { r2, w2, id2 }
+  w2 -> { layouts, idw, tag2, clients }
+  layouts -> { lUp, l1, lDown }
+  lUp -> { l2, l3 }
+  lDown -> { l4 }
+  clients -> { up, c1, down }
+  up -> { c2 }
+  down -> { c3, c4 }
+
+  hiddenWs -> { w3, w4, "..." }
+
+  StackSet, screens, s2, w2, clients, c1 [style=filled]
+}
