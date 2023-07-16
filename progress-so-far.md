@@ -176,9 +176,9 @@ links are worth a look!
   - https://en.wikibooks.org/wiki/Haskell/Zippers
   - https://donsbot.com/2007/05/17/roll-your-own-window-manager-tracking-focus-with-a-zipper/
 
-- [ ] What is a zipper?
-- [ ] Why not just use `Vec`?
-- [ ] Building up the tree state for a [StackSet][30]
+- [x] What is a zipper?
+- [x] Why not just use `Vec`?
+- [x] Building up the tree state for a [StackSet][30]
 
 
 

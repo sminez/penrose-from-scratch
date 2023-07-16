@@ -1,5 +1,5 @@
 //! Config and logic for our status bar
-use crate::{BAR_HEIGHT_PX, BLACK, BLUE, FONT, GREY, WHITE};
+use crate::{BAR_HEIGHT_PX, BLACK, BLUE, FONT, GREY, POINT_SIZE, WHITE};
 use penrose::{util::spawn_for_output_with_args, x::XConn, Color};
 use penrose_ui::{
     bar::{
@@ -22,47 +22,46 @@ pub fn status_bar<X: XConn>() -> penrose_ui::Result<StatusBar<X>> {
     let empty_ws: Color = GREY.into();
 
     let style = TextStyle {
-        font: FONT.to_string(),
-        point_size: 10,
         fg: WHITE.into(),
         bg: Some(BLACK.into()),
-        padding: (2.0, 2.0),
+        padding: (2, 2),
     };
 
     let padded_style = TextStyle {
-        padding: (4.0, 2.0),
-        ..style.clone()
+        padding: (4, 2),
+        ..style
     };
 
     StatusBar::try_new(
         Position::Bottom,
         BAR_HEIGHT_PX,
         style.bg.unwrap_or_else(|| 0x000000.into()),
-        &[&style.font],
+        FONT,
+        POINT_SIZE,
         vec![
-            Box::new(Workspaces::new(&style, highlight, empty_ws)),
-            Box::new(CurrentLayout::new(&style)),
+            Box::new(Workspaces::new(style, highlight, empty_ws)),
+            Box::new(CurrentLayout::new(style)),
             Box::new(ActiveWindowName::new(
                 MAX_ACTIVE_WINDOW_CHARS,
-                &TextStyle {
+                TextStyle {
                     bg: Some(highlight),
-                    padding: (6.0, 4.0),
-                    ..style.clone()
+                    padding: (6, 4),
+                    ..style
                 },
                 true,
                 false,
             )),
-            Box::new(current_weather_info(&padded_style)),
-            Box::new(wifi_network(&padded_style)),
-            Box::new(battery_summary("BAT1", &padded_style)),
-            Box::new(battery_summary("BAT0", &padded_style)),
-            Box::new(amixer_volume("Master", &padded_style)),
-            Box::new(current_date_and_time(&padded_style)),
+            Box::new(current_weather_info(padded_style)),
+            Box::new(wifi_network(padded_style)),
+            Box::new(battery_summary("BAT1", padded_style)),
+            Box::new(battery_summary("BAT0", padded_style)),
+            Box::new(amixer_volume("Master", padded_style)),
+            Box::new(current_date_and_time(padded_style)),
         ],
     )
 }
 
-fn current_weather_info(style: &TextStyle) -> IntervalText {
+fn current_weather_info(style: TextStyle) -> IntervalText {
     IntervalText::new(style, get_weather_text, Duration::from_secs(60 * 5))
 }
 

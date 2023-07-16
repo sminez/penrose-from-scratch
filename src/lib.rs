@@ -7,6 +7,7 @@ pub mod layouts;
 
 // UI styling
 pub const FONT: &str = "ProFontIIx Nerd Font";
+pub const POINT_SIZE: u8 = 10;
 
 pub const BAR_HEIGHT_PX: u32 = 24;
 pub const GAP_PX: u32 = 5;
